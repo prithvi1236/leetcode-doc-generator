@@ -13,7 +13,7 @@ A Chrome extension that helps students document their LeetCode problem solutions
 </div>
 
 1. Download [leetcode-doc-generator](https://github.com/prithvi1236/leetcode-doc-generator/archive/refs/heads/main.zip)
-2. `chrome://extensions` → Developer mode → Load unpacked → Select folder
+2. `chrome://extensions` → Developer mode → Load unpacked → Select folder leetcode-doc-generator-main
 3. ✅ Done!
 
 ## Features
