@@ -2,54 +2,29 @@
 
 A Chrome extension that helps students document their LeetCode problem solutions in a standardized .docx format with intelligent code extraction and automatic page refresh capabilities.
 
+## 🚀 Quick Install
+
+<div align="center">
+
+![Installation Demo](https://github.com/user-attachments/assets/1ff17fb2-37c3-4de9-9b36-c9b07efb6778)
+
+*[Watch full tutorial on YouTube](https://www.youtube.com/watch?v=oswjtLwCUqg)*
+
+</div>
+
+1. Download [leetcode-doc-generator](https://github.com/prithvi1236/leetcode-doc-generator/archive/refs/heads/main.zip)
+2. `chrome://extensions` → Developer mode → Load unpacked → Select folder
+3. ✅ Done!
+
 ## Features
 
 - ✅ **Smart Code Extraction**: Automatically capture LeetCode submission details from submission pages
 - ✅ **Keyboard Shortcut**: Quick capture with Ctrl+Shift+K - opens popup and auto-captures
 - ✅ **Auto-Redirect & Extract**: Handles `/submissions/detail/{id}/` URLs automatically
-- ✅ **Intelligent Line Number Removal**: Removes line numbers while preserving code indentation
-- ✅ **HTML Element Filtering**: Ignores React syntax highlighter line number elements
-- ✅ **Auto-Refresh**: Automatically refreshes page if content script isn't loaded
 - ✅ **Problem Management**: Manage multiple problems in a problem set with full CRUD operations
 - ✅ **Drag & Drop Reordering**: Reorder problems with intuitive drag-and-drop interface
 - ✅ **Professional Document Generation**: Generate beautifully formatted .docx documents
 - ✅ **Multi-Language Support**: Smart language detection (handles multiple code blocks on page)
-- ✅ **Data Validation**: Comprehensive validation of all captured data
-- ✅ **Visual Feedback**: Real-time status updates with loading animations
-- ✅ **Clean User Interface**: Simple and intuitive design with responsive feedback
-
-## Recent Enhancements
-
-### ⌨️ Keyboard Shortcut Capture
-- **Quick Access**: Press Ctrl+Shift+K to open popup and auto-capture
-- **Seamless Workflow**: Instantly capture without clicking buttons
-- **Customizable**: Change shortcut at chrome://extensions/shortcuts
-- **Auto-Redirect Support**: Works on both URL formats
-
-### 🔄 Smart URL Handling
-- **Detail-Only URL Support**: Handles `/submissions/detail/{id}/` URLs
-- **Auto-Redirect**: Automatically redirects to proper format
-- **Auto-Extract**: Extracts data after redirect without manual intervention
-- **Problem Slug Detection**: Finds correct problem from page content
-
-### 🔄 Auto-Refresh Feature
-- **Smart Detection**: Automatically detects when content script isn't loaded
-- **Seamless Recovery**: Refreshes page and retries capture automatically
-- **Visual Feedback**: Shows countdown timer and loading states during refresh
-- **No Manual Intervention**: Users don't need to manually refresh pages
-
-### 🎨 Enhanced User Experience
-- **Loading States**: Button text changes during operations (Checking → Refreshing → Capturing)
-- **Animated Spinners**: Visual loading indicators for all async operations
-- **Status Messages**: Color-coded feedback with automatic hide timers
-- **Error Recovery**: Graceful handling of common issues with clear guidance
-
-## Tested With
-
-- ✅ C++, Python submissions on LeetCode
-- ✅ React syntax highlighter pages with HTML line numbers
-- ✅ Pages with mixed line number formats
-- ✅ Content script loading edge cases
 
 ## Project Structure
 
@@ -69,14 +44,6 @@ leetcode-doc-generator/
     ├── icon48.png
     └── icon128.png
 ```
-
-## Installation (Development)
-
-1. Clone this repository
-2. Open Chrome and navigate to `chrome://extensions/`
-3. Enable "Developer mode" in the top right
-4. Click "Load unpacked"
-5. Select the `leetcode-doc-generator` directory
 
 ## Usage
 
