@@ -1,21 +1,80 @@
 {
   "name": "leetcode-doc-generator",
   "version": "1.0.0",
-  "description": "Chrome extension to capture LeetCode submissions and generate formatted .docx documents",
+  "description": "Chrome extension that automates the documentation of LeetCode problem solutions into professionally formatted .docx documents for academic submissions",
   "main": "background.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint *.js",
+    "lint:fix": "eslint *.js --fix",
+    "format": "prettier --write *.js *.html *.css *.md",
+    "format:check": "prettier --check *.js *.html *.css *.md",
+    "validate": "npm run lint && npm run format:check",
+    "build": "npm run validate && echo 'Build successful'",
+    "package": "npm run build && zip -r leetcode-doc-generator.zip . -x 'node_modules/*' '.git/*' '*.zip' 'package-lock.json'",
+    "dev": "echo 'Load unpacked extension from current directory in Chrome'",
+    "docs:serve": "echo 'Serving documentation locally'",
+    "release": "npm run build && npm run package"
   },
   "keywords": [
     "leetcode",
     "chrome-extension",
     "documentation",
-    "docx"
+    "docx",
+    "academic",
+    "student-tools",
+    "code-documentation",
+    "submission-capture",
+    "manifest-v3"
   ],
-  "author": "",
+  "author": {
+    "name": "LeetCode Documentation Generator Contributors",
+    "url": "https://github.com/prithvi1236/leetcode-doc-generator"
+  },
   "license": "MIT",
+  "homepage": "https://github.com/prithvi1236/leetcode-doc-generator",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/prithvi1236/leetcode-doc-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/prithvi1236/leetcode-doc-generator/issues"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
   "dependencies": {
     "docx": "^8.5.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "@eslint/js": "^9.0.0"
+  },
+  "browserslist": [
+    "Chrome >= 88"
+  ],
+  "manifest": {
+    "version": 3,
+    "permissions": [
+      "storage",
+      "activeTab"
+    ],
+    "host_permissions": [
+      "https://leetcode.com/*"
+    ]
+  },
+  "extensionInfo": {
+    "chromeWebStore": {
+      "id": "pending",
+      "url": "pending"
+    },
+    "supportedBrowsers": [
+      "Chrome 88+",
+      "Edge 88+",
+      "Brave",
+      "Opera"
+    ]
+  }
 }

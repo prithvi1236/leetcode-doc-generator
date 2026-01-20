@@ -1,6 +1,10 @@
 # LeetCode Documentation Generator
 
-A Chrome extension that helps students document their LeetCode problem solutions in a standardized .docx format with intelligent code extraction and automatic page refresh capabilities.
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/prithvi1236/leetcode-doc-generator)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Chrome Extension](https://img.shields.io/badge/chrome-extension-yellow.svg)](https://chrome.google.com/webstore)
+
+A Chrome extension that automates the documentation of LeetCode problem solutions into professionally formatted .docx documents for academic submissions.
 
 ## 🚀 Quick Install
 
@@ -16,138 +20,404 @@ A Chrome extension that helps students document their LeetCode problem solutions
 2. `chrome://extensions` → Developer mode → Load unpacked → Select folder leetcode-doc-generator-main
 3. ✅ Done!
 
-## Features
+## 📋 Table of Contents
 
+- [Features](#features)
+- [Architecture](#architecture)
+- [Installation](#installation)
+- [Usage](#usage)
+- [API Documentation](#api-documentation)
+- [Development](#development)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [Troubleshooting](#troubleshooting)
+- [License](#license)
+
+## ✨ Features
+
+### Core Functionality
 - ✅ **Smart Code Extraction**: Automatically capture LeetCode submission details from submission pages
-- ✅ **Keyboard Shortcut**: Quick capture with Ctrl+Shift+K - opens popup and auto-captures
-- ✅ **Auto-Redirect & Extract**: Handles `/submissions/detail/{id}/` URLs automatically
-- ✅ **Problem Management**: Manage multiple problems in a problem set with full CRUD operations
-- ✅ **Drag & Drop Reordering**: Reorder problems with intuitive drag-and-drop interface
-- ✅ **Professional Document Generation**: Generate beautifully formatted .docx documents
-- ✅ **Multi-Language Support**: Smart language detection (handles multiple code blocks on page)
+- ✅ **Intelligent Line Number Removal**: Removes line numbers while preserving code indentation
+- ✅ **HTML Element Filtering**: Ignores React syntax highlighter line number elements
+- ✅ **Auto-Refresh**: Automatically refreshes page if content script isn't loaded
+- ✅ **URL Redirection**: Handles `/submissions/detail/{id}/` URLs automatically
 
-## Project Structure
+### User Experience
+- ✅ **Keyboard Shortcut**: Quick capture with Ctrl+Shift+K - opens popup and auto-captures
+- ✅ **Problem Management**: Full CRUD operations for problems and problem sets
+- ✅ **Drag & Drop Reordering**: Intuitive problem reordering interface
+- ✅ **Visual Feedback**: Real-time status updates with loading animations
+- ✅ **Data Validation**: Comprehensive input validation and error handling
+
+### Document Generation
+- ✅ **Professional Formatting**: Generate beautifully formatted .docx documents
+- ✅ **Multi-Language Support**: Smart language detection for various programming languages
+- ✅ **Custom Styling**: Arial for text, Courier New for code, proper spacing and structure
+
+## 🏗️ Architecture
+
+### System Overview
+
+```mermaid
+graph TB
+    A[LeetCode Page] --> B[Content Script]
+    B --> C[Background Service Worker]
+    C --> D[Popup Interface]
+    D --> E[Storage Manager]
+    E --> F[Document Generator]
+    F --> G[.docx File]
+    
+    subgraph "Chrome Extension"
+        B
+        C
+        D
+        E
+        F
+    end
+```
+
+### Component Architecture
+
+| Component | Responsibility | Key Files |
+|-----------|---------------|-----------|
+| **Content Script** | DOM extraction, code cleaning | `content.js` |
+| **Background Worker** | Message routing, lifecycle management | `background.js` |
+| **Popup Interface** | User interaction, state management | `popup.js`, `popup.html`, `popup.css` |
+| **Storage Manager** | Data persistence, CRUD operations | `storage.js` |
+| **Document Generator** | .docx file creation and formatting | `docxGenerator.js` |
+
+### Data Flow
+
+1. **Extraction Phase**: Content script extracts code from LeetCode submission pages
+2. **Processing Phase**: Background worker routes messages and manages state
+3. **Storage Phase**: Storage manager persists data with validation
+4. **Generation Phase**: Document generator creates formatted .docx files
+
+## 📦 Installation
+
+### Prerequisites
+- Chrome browser (version 88+)
+- Developer mode enabled in Chrome extensions
+- Internet connection (for docx library CDN)
+
+### Development Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/prithvi1236/leetcode-doc-generator.git
+cd leetcode-doc-generator
+
+# Load in Chrome
+# 1. Open chrome://extensions/
+# 2. Enable "Developer mode"
+# 3. Click "Load unpacked"
+# 4. Select the project directory
+```
+
+### Production Installation
+1. Download from Chrome Web Store (coming soon)
+2. Or use the manual installation method above
+
+## 📖 Usage
+
+### Basic Workflow
+
+#### 1. Setup Problem Set
+```javascript
+// Navigate to extension popup
+// Fill in required information
+{
+  "problemSetTitle": "Problem Set 6",
+  "studentName": "John Doe"
+}
+```
+
+#### 2. Capture Problems
+- Navigate to LeetCode submission page
+- Use keyboard shortcut `Ctrl+Shift+K` or click extension icon
+- Click "Capture from Current Page"
+- Extension automatically handles page refresh if needed
+
+#### 3. Manage Problems
+- **Reorder**: Drag and drop problems in desired sequence
+- **Edit**: Modify problem details using edit button
+- **Delete**: Remove individual problems or clear all
+
+#### 4. Generate Document
+- Click "Generate Document" to create .docx file
+- File automatically downloads with format: `{Student Name} - {Problem Set Title}.docx`
+
+### Advanced Features
+
+#### Keyboard Shortcuts
+- `Ctrl+Shift+K`: Open popup and auto-capture (if on submission page)
+
+#### URL Handling
+The extension automatically handles different LeetCode URL formats:
+- `https://leetcode.com/problems/{slug}/submissions/{id}/` ✅ Direct support
+- `https://leetcode.com/submissions/detail/{id}/` ✅ Auto-redirects to proper format
+
+#### Error Recovery
+- **Auto-refresh**: Automatically refreshes page if content script fails to load
+- **Retry logic**: Multiple attempts with exponential backoff
+- **Graceful degradation**: Clear error messages with recovery suggestions
+
+## 📚 API Documentation
+
+### Storage API
+
+#### `saveProblemSetInfo(info)`
+Saves problem set metadata.
+
+**Parameters:**
+- `info` (Object): Problem set information
+  - `title` (string): Problem set title (2-200 characters)
+  - `submittedBy` (string): Student name (2-100 characters)
+
+**Returns:** `Promise<void>`
+
+**Throws:** `Error` if validation fails
+
+```javascript
+await saveProblemSetInfo({
+  title: "Problem Set 6",
+  submittedBy: "John Doe"
+});
+```
+
+#### `addProblem(problem)`
+Adds a new problem to the current problem set.
+
+**Parameters:**
+- `problem` (Object): Problem data
+  - `name` (string): Problem name (1-300 characters)
+  - `submissionLink` (string): Valid LeetCode submission URL
+  - `code` (string): Source code (1-100,000 characters)
+  - `language` (string): Programming language
+
+**Returns:** `Promise<void>`
+
+```javascript
+await addProblem({
+  name: "Two Sum",
+  submissionLink: "https://leetcode.com/problems/two-sum/submissions/123456/",
+  code: "function twoSum(nums, target) { ... }",
+  language: "JavaScript"
+});
+```
+
+### Document Generation API
+
+#### `generateDocxDocument(documentData)`
+Generates a formatted .docx document.
+
+**Parameters:**
+- `documentData` (Object): Complete document data
+  - `problemSetInfo` (Object): Problem set metadata
+  - `problems` (Array): Array of problem objects
+
+**Returns:** `Document` - docx Document instance
+
+### Content Script API
+
+#### `extractProblemData()`
+Extracts problem data from current LeetCode submission page.
+
+**Returns:** `Promise<Object>` - Extracted problem data
+
+**Throws:** `Error` if extraction fails
+
+## 🛠️ Development
+
+### Project Structure
 
 ```
 leetcode-doc-generator/
-├── manifest.json          # Extension configuration (Manifest V3)
-├── package.json           # Project metadata and dependencies
-├── popup.html            # Popup UI with enhanced status indicators
-├── popup.js              # Popup logic with auto-refresh capabilities
-├── popup.css             # Popup styling with loading animations
-├── content.js            # Advanced DOM extraction & code cleaning
+├── docs/                   # Documentation
+│   ├── API.md             # API documentation
+│   ├── ARCHITECTURE.md    # System architecture
+│   └── CONTRIBUTING.md    # Contribution guidelines
+├── src/                   # Source code (future organization)
+├── tests/                 # Test files (future)
+├── manifest.json          # Extension configuration
+├── package.json           # Project metadata
+├── popup.html            # Popup UI
+├── popup.js              # Popup logic
+├── popup.css             # Popup styling
+├── content.js            # Content script
 ├── background.js         # Background service worker
-├── docxGenerator.js      # Professional .docx file generation
-├── storage.js            # Chrome storage operations (CRUD)
-├── docx.min.js           # docx library (CDN loaded)
+├── docxGenerator.js      # Document generation
+├── storage.js            # Storage operations
+├── docx.min.js           # External library
 └── icons/                # Extension icons
     ├── icon16.png
     ├── icon48.png
     ├── icon128.png
-    ├── bmc-brand-icon.png  # Buy Me a Coffee icon
-    └── README.md
+    └── bmc-brand-icon.png
 ```
 
-## Usage
+### Development Setup
 
-### 1. Set up problem set info:
-- Click the extension icon in the toolbar
-- Enter your problem set title and student name
-- Click "Save Problem Set Info"
+```bash
+# Install development dependencies (if any)
+npm install
 
-### 2. Capture submissions:
+# Enable Chrome extension developer mode
+# Load unpacked extension from project directory
 
-**Method 1: Using Keyboard Shortcut (Fastest)**
-- Navigate to any LeetCode submission page (standard or detail-only URL)
-- Press **Ctrl+Shift+K** (or customize at chrome://extensions/shortcuts)
-- Popup opens and automatically captures the submission
-- Works on both URL formats:
-  - `/problems/{slug}/submissions/{id}/`
-  - `/submissions/detail/{id}/` (auto-redirects and extracts)
+# For debugging
+# Open Chrome DevTools on extension popup
+# Check background page in chrome://extensions
+```
 
-**Method 2: Manual Capture**
-- Navigate to a LeetCode submission page
-- Click the extension icon
-- Click "Capture from Current Page"
-- **Auto-refresh**: If content script isn't loaded, the page will refresh automatically
-- **Visual feedback**: Watch the button states and status messages
-- The problem will be added to your list with clean, properly formatted code
+### Code Style Guidelines
 
-### 3. Manage problems:
-- **Reorder**: Use drag-and-drop
-- **Edit**: Modify problem details with the edit button
-- **Delete**: Remove individual problems
-- **Clear All**: Remove all problems at once
+#### JavaScript
+- Use ES6+ features where supported
+- Prefer `async/await` over Promises
+- Use descriptive variable and function names
+- Add JSDoc comments for all functions
+- Handle errors gracefully with try-catch blocks
 
-### 4. Generate document:
-- Click "Generate Document" to download a formatted .docx file
-- Filename format: `{Student Name} - {Problem Set Title}.docx`
+#### HTML/CSS
+- Use semantic HTML elements
+- Follow BEM methodology for CSS classes
+- Ensure responsive design principles
+- Maintain accessibility standards
 
-### 5. Start new problem set:
-- Click "Start New Problem Set" to clear all data and begin fresh
+### Performance Considerations
 
-## Document Format
+- **Lazy Loading**: Content script only loads on LeetCode submission pages
+- **Efficient DOM Queries**: Minimize DOM traversal operations
+- **Memory Management**: Clean up event listeners and temporary data
+- **Storage Optimization**: Use Chrome's local storage efficiently
 
-Generated .docx documents include:
+## 🧪 Testing
 
-- **Header:** Problem set title (bold, 24pt) and student name (12pt)
-- **For each problem:**
-  - Problem name (bold, 18pt, Arial)
-  - Submission link (12pt, Arial, black text)
-  - Clean code (10pt, Courier New, red text, monospace)
-- Professional sans-serif font (Arial) for all non-code text
-- Proper spacing between sections
-- **Clean formatting**: No line numbers, preserved indentation
+### Manual Testing Checklist
 
-## Technical Details
+#### Core Functionality
+- [ ] Extension loads without errors
+- [ ] Popup opens and displays correctly
+- [ ] Problem set info saves and persists
+- [ ] Code extraction works on various LeetCode pages
+- [ ] Document generation produces valid .docx files
 
-### Code Extraction & Cleaning
-- **DOM Parsing**: Intelligently extracts code from LeetCode submission pages
-- **HTML Filtering**: Removes React syntax highlighter line number elements automatically
-- **Line Number Removal**: Strips various formats (`1 code`, `1.code`, `1|code`) while preserving indentation
-- **Multi-Language Detection**: Prioritizes actual code over decorative elements, handles multiple languages per page
+#### Edge Cases
+- [ ] Handle pages without code blocks
+- [ ] Handle malformed submission URLs
+- [ ] Handle network connectivity issues
+- [ ] Handle storage quota exceeded
+- [ ] Handle very large code submissions
 
-### Auto-Refresh System
-- **Content Script Detection**: Automatically checks if extraction scripts are loaded
-- **Smart Recovery**: Refreshes page and retries if content script unavailable
-- **Visual Feedback**: Real-time status updates with loading animations and countdown timers
+#### Browser Compatibility
+- [ ] Chrome (latest)
+- [ ] Chrome (version 88+)
+- [ ] Different screen resolutions
+- [ ] Different zoom levels
 
-### Data Management
-- **Validation**: Comprehensive input validation for all captured data
-- **Storage**: Uses Chrome's local storage API for persistent data across sessions
-- **CRUD Operations**: Full create, read, update, delete support for problems and problem sets
+### Automated Testing (Future)
 
-### Document Generation
-- **Professional Formatting**: Generates .docx files with proper fonts, spacing, and structure
-- **Clean Code Output**: Monospace font with preserved indentation, no line number artifacts
+```bash
+# Unit tests
+npm test
 
-## Requirements & Limitations
+# Integration tests
+npm run test:integration
 
-**Requirements:**
-- Chrome browser (Manifest V3 compatible)
-- Internet connection (for docx library)
-- LeetCode submission pages
+# E2E tests
+npm run test:e2e
+```
 
-**Limitations:**
-- LeetCode submission pages only
-- Maximum 100,000 characters per code submission
-- Requires JavaScript enabled
+## 🤝 Contributing
 
-**Permissions:**
-- `storage` - Save problems and settings
-- `activeTab` - Read pages and auto-refresh
-- LeetCode domain access
+### Getting Started
 
-## Troubleshooting
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Make your changes following the code style guidelines
+4. Test your changes thoroughly
+5. Commit with descriptive messages: `git commit -m 'Add amazing feature'`
+6. Push to your branch: `git push origin feature/amazing-feature`
+7. Open a Pull Request
 
-**Common Issues:**
-- **Content script not loaded** → Extension auto-refreshes page
-- **Code extraction fails** → Ensure page is fully loaded
-- **Line numbers in output** → Updated extraction handles this automatically
-- **Missing indentation** → Enhanced algorithm preserves formatting
+### Development Workflow
 
-**Debug:** Check browser console for detailed logs during capture process.
+1. **Issue Creation**: Create an issue describing the bug or feature
+2. **Branch Creation**: Create a branch from `main` for your changes
+3. **Development**: Implement changes following coding standards
+4. **Testing**: Test changes manually and add automated tests if applicable
+5. **Documentation**: Update documentation as needed
+6. **Review**: Submit PR for code review
+7. **Merge**: Merge after approval and testing
 
-## License
+### Code Review Guidelines
 
-MIT - Feel free to use, modify, and distribute.
+- **Functionality**: Does the code work as intended?
+- **Performance**: Are there any performance implications?
+- **Security**: Are there any security vulnerabilities?
+- **Maintainability**: Is the code readable and maintainable?
+- **Testing**: Are there adequate tests for the changes?
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+#### "Content script not loaded"
+**Cause**: Content script failed to inject or page not fully loaded
+**Solution**: Extension automatically refreshes page and retries
+
+#### "Code extraction fails"
+**Cause**: Page structure changed or submission not fully rendered
+**Solutions**:
+1. Ensure page is fully loaded before capture
+2. Refresh the page manually
+3. Check browser console for detailed error logs
+
+#### "Document generation fails"
+**Cause**: Invalid data or docx library not loaded
+**Solutions**:
+1. Verify all required fields are filled
+2. Check internet connection (for docx library CDN)
+3. Try refreshing the extension popup
+
+#### "Storage quota exceeded"
+**Cause**: Too much data stored locally
+**Solution**: Clear old problem sets or reduce code size
+
+### Debug Information
+
+Enable debug logging by opening browser console:
+1. Right-click extension popup → Inspect
+2. Check Console tab for detailed logs
+3. Background page logs: `chrome://extensions` → Background page
+
+### Performance Issues
+
+If the extension feels slow:
+1. Check if you have too many problems stored
+2. Verify internet connection for CDN resources
+3. Close other Chrome extensions temporarily
+4. Restart Chrome browser
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [docx library](https://github.com/dolanmiu/docx) for document generation
+- [Font Awesome](https://fontawesome.com/) for icons
+- LeetCode for providing the platform that inspired this tool
+
+## 📞 Support
+
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/prithvi1236/leetcode-doc-generator/issues)
+- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/prithvi1236/leetcode-doc-generator/discussions)
+- ☕ **Support Development**: [Buy me a coffee](https://buymeacoffee.com/prithvb)
+
+---
+
+<div align="center">
+Made with ❤️ for students documenting their LeetCode journey
+</div>
