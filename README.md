@@ -31,6 +31,7 @@ A Chrome extension that helps students document their LeetCode problem solutions
 ```
 leetcode-doc-generator/
 ├── manifest.json          # Extension configuration (Manifest V3)
+├── package.json           # Project metadata and dependencies
 ├── popup.html            # Popup UI with enhanced status indicators
 ├── popup.js              # Popup logic with auto-refresh capabilities
 ├── popup.css             # Popup styling with loading animations
@@ -42,7 +43,9 @@ leetcode-doc-generator/
 └── icons/                # Extension icons
     ├── icon16.png
     ├── icon48.png
-    └── icon128.png
+    ├── icon128.png
+    ├── bmc-brand-icon.png  # Buy Me a Coffee icon
+    └── README.md
 ```
 
 ## Usage
@@ -98,100 +101,53 @@ Generated .docx documents include:
 
 ## Technical Details
 
-### Advanced Code Extraction
+### Code Extraction & Cleaning
+- **DOM Parsing**: Intelligently extracts code from LeetCode submission pages
+- **HTML Filtering**: Removes React syntax highlighter line number elements automatically
+- **Line Number Removal**: Strips various formats (`1 code`, `1.code`, `1|code`) while preserving indentation
+- **Multi-Language Detection**: Prioritizes actual code over decorative elements, handles multiple languages per page
 
-The extension uses sophisticated DOM parsing and cleaning:
+### Auto-Refresh System
+- **Content Script Detection**: Automatically checks if extraction scripts are loaded
+- **Smart Recovery**: Refreshes page and retries if content script unavailable
+- **Visual Feedback**: Real-time status updates with loading animations and countdown timers
 
-#### HTML Element Filtering
-- Removes React syntax highlighter line number elements
-- Filters out `<span class="linenumber react-syntax-highlighter-line-number">`
-- Cleans number-only spans with line number styling
-- Preserves actual code content while removing visual artifacts
+### Data Management
+- **Validation**: Comprehensive input validation for all captured data
+- **Storage**: Uses Chrome's local storage API for persistent data across sessions
+- **CRUD Operations**: Full create, read, update, delete support for problems and problem sets
 
-#### Intelligent Line Number Removal
-- **Pattern Recognition**: Detects various line number formats
-- **Indentation Preservation**: Maintains original code structure
-- **Smart Filtering**: Removes number-only lines completely
-- **Multi-format Support**: Handles `1 code`, `1.code`, `1|code`, etc.
+### Document Generation
+- **Professional Formatting**: Generates .docx files with proper fonts, spacing, and structure
+- **Clean Code Output**: Monospace font with preserved indentation, no line number artifacts
 
-#### Content Script Management
-- **Auto-detection**: Checks if content script is ready
-- **Auto-refresh**: Refreshes page if script isn't loaded
-- **Retry Logic**: Multiple attempts with exponential backoff
-- **Visual Feedback**: Real-time status updates during process
+## Requirements & Limitations
 
-### Data Validation
-
-Comprehensive validation for all captured data:
-- **Problem name**: 1-300 characters, required
-- **Submission link**: Valid LeetCode URL format
-- **Code**: 1-100,000 characters with structure validation
-- **Language**: Valid programming language string
-- **Problem set info**: Title (2-200 chars), Name (2-100 chars)
-
-### Storage & State Management
-
-Uses Chrome's `chrome.storage.local` API:
-- Problem set info stored separately from problems
-- Each problem stored with unique ID and metadata
-- Supports full CRUD operations (Create, Read, Update, Delete)
-- Maintains order for drag-and-drop functionality
-- Persistent across browser sessions
-
-## User Experience Features
-
-### Visual Feedback System
-- **Button States**: Dynamic button text during operations
-- **Loading Animations**: CSS spinners for async operations
-- **Status Messages**: Color-coded feedback (success, error, refreshing)
-- **Progress Indicators**: Countdown timers during page refresh
-
-### Error Handling
-- **Graceful Degradation**: Clear error messages with recovery suggestions
-- **Auto-recovery**: Automatic page refresh for common issues
-- **Validation Feedback**: Specific error messages for data validation failures
-- **Debug Logging**: Comprehensive console logging for troubleshooting
-
-## Development Status
-
-✅ **Production Ready** - All core features implemented, tested, and enhanced
-
-## Requirements
-
+**Requirements:**
 - Chrome browser (Manifest V3 compatible)
-- Internet connection (for docx library CDN)
-- LeetCode submission pages (fully loaded)
+- Internet connection (for docx library)
+- LeetCode submission pages
 
-## Browser Permissions
-
-- `storage`: For saving problems and settings
-- `activeTab`: For reading submission pages and auto-refresh
-- `host_permissions`: LeetCode domain access
-
-## Known Limitations
-
-- Only works on LeetCode submission pages
-- Requires JavaScript to be enabled
+**Limitations:**
+- LeetCode submission pages only
 - Maximum 100,000 characters per code submission
-- Auto-refresh requires `activeTab` permission
+- Requires JavaScript enabled
+
+**Permissions:**
+- `storage` - Save problems and settings
+- `activeTab` - Read pages and auto-refresh
+- LeetCode domain access
 
 ## Troubleshooting
 
-### Common Issues
-1. **"Content script not loaded"**: Extension will auto-refresh the page
-2. **Code extraction fails**: Ensure page is fully loaded before capture
-3. **Line numbers in output**: Updated extraction should handle this automatically
-4. **Missing indentation**: Enhanced algorithm preserves original formatting
+**Common Issues:**
+- **Content script not loaded** → Extension auto-refreshes page
+- **Code extraction fails** → Ensure page is fully loaded
+- **Line numbers in output** → Updated extraction handles this automatically
+- **Missing indentation** → Enhanced algorithm preserves formatting
 
-### Debug Information
-- Check browser console for detailed extraction logs
-- Extension logs all major operations and decisions
-- Status messages provide real-time feedback
+**Debug:** Check browser console for detailed logs during capture process.
 
 ## License
 
-MIT
-
-## Contributing
-
-Feel free to submit issues and enhancement requests. The extension is designed to be robust and user-friendly for academic documentation needs.
+MIT - Feel free to use, modify, and distribute.
