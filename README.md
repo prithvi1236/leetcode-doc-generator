@@ -22,16 +22,16 @@ A Chrome extension that automates the documentation of LeetCode problem solution
 
 ## 📋 Table of Contents
 
-- [Features](#features)
-- [Architecture](#architecture)
-- [Installation](#installation)
-- [Usage](#usage)
-- [API Documentation](#api-documentation)
-- [Development](#development)
-- [Testing](#testing)
-- [Contributing](#contributing)
-- [Troubleshooting](#troubleshooting)
-- [License](#license)
+- [Features](#-features)
+- [Architecture](#-architecture)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [API Documentation](#-api-documentation)
+- [Development](#-development)
+- [Testing](#-testing)
+- [Contributing](#-contributing)
+- [Troubleshooting](#-troubleshooting)
+- [License](#-license)
 
 ## ✨ Features
 
